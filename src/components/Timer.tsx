@@ -2,8 +2,12 @@ import { StyleSheet, Text } from "react-native";
 
 import colors from "@/constants/colors";
 
-export default function Timer() {
-  return <Text style={styles.text}>20 sec</Text>;
+type TimerProps = {
+  time: number;
+};
+
+export default function Timer({ time }: TimerProps) {
+  return <Text style={styles.text}>{time} sec</Text>;
 }
 
 const styles = StyleSheet.create({
