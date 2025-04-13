@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, PropsWithChildren } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  PropsWithChildren,
+} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { TQuizContext } from "@/types";
 
@@ -12,15 +19,28 @@ const QuizContext = createContext<TQuizContext>({
   setSelected: () => {},
   handleNext: () => {},
   score: 0,
+  bestScore: 0,
 });
 
 export default function QuizProvider({ children }: PropsWithChildren) {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState("");
   const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
 
   const question = questions[index];
   const isFinish = index >= questions.length;
+
+  useEffect(() => {
+    loadBestScore();
+  }, []);
+
+  useEffect(() => {
+    if (isFinish && score > bestScore) {
+      setBestScore(score);
+      saveBestScore(score);
+    }
+  }, [isFinish]);
 
   const handleNext = () => {
     if (isFinish) {
@@ -42,6 +62,25 @@ export default function QuizProvider({ children }: PropsWithChildren) {
     setScore(0);
   };
 
+  const loadBestScore = async () => {
+    try {
+      const value = await AsyncStorage.getItem("best-score");
+      if (value !== null) {
+        setBestScore(Number(value));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const saveBestScore = async (value: number) => {
+    try {
+      await AsyncStorage.setItem("best-score", String(value));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <QuizContext.Provider
       value={{
@@ -52,6 +91,7 @@ export default function QuizProvider({ children }: PropsWithChildren) {
         setSelected,
         handleNext,
         score,
+        bestScore,
       }}
     >
       {children}

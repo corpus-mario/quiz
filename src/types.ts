@@ -12,4 +12,5 @@ export type TQuizContext = {
   setSelected: (option: string) => void;
   handleNext: () => void;
   score: number;
+  bestScore: number;
 };

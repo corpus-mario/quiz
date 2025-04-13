@@ -5,7 +5,7 @@ import Card from "@/components/Card";
 import { useQuizContext } from "@/providers/QuizProvider";
 
 export default function ResultCard() {
-  const { score, totalQuestions } = useQuizContext();
+  const { score, totalQuestions, bestScore } = useQuizContext();
 
   return (
     <Card title="Well done!">
@@ -13,7 +13,7 @@ export default function ResultCard() {
         <Text>
           Correct answer: {score}/{totalQuestions}
         </Text>
-        <Text>Best score: 5</Text>
+        <Text>Best score: {bestScore}</Text>
       </View>
     </Card>
   );
