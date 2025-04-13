@@ -8,24 +8,33 @@ import ResultCard from "@/components/ResultCard";
 import Timer from "@/components/Timer";
 import Button from "@/components/Button";
 
+import { useQuizContext } from "@/providers/QuizProvider";
+
 import colors from "@/constants/colors";
 
 export default function QuizScreen() {
+  const { question, handleNext } = useQuizContext();
+
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.container}>
-        <QuestionNumber />
+        {question ? <QuestionNumber /> : <View />}
 
-        <View style={{ gap: 12 }}>
-          <QuestionCard />
-          <Timer />
-        </View>
+        {question ? (
+          <View style={{ gap: 12 }}>
+            <QuestionCard question={question} />
+            <Timer />
+          </View>
+        ) : (
+          <ResultCard />
+        )}
 
         <Button
-          text="Next"
+          text={question ? "Next" : "Restart"}
           rightIcon={
             <Ionicons name="arrow-forward-outline" size={24} color="white" />
           }
+          onPress={handleNext}
         />
       </View>
     </SafeAreaView>
